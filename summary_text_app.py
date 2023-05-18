@@ -12,7 +12,6 @@ model_pt_cstnews = T5ForConditionalGeneration.from_pretrained('phpaiola/ptt5-bas
 st.title("Gerador de manchete a partir do texto de notícia 📰")
 
 form = st.form(key='my_form')
-
 manchete_texto = form.text_area(label="📝 Insira uma notícia: ", value="", height=300, placeholder='Escreva aqui...')
 submit_button = form.form_submit_button(label='Resumir 🎉')
 
