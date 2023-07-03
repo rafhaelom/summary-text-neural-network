@@ -43,7 +43,9 @@ if submit_button and opcao == "Link" and url_noticia != "":
     g.close()
 
     st.write('### Notícia 📄')
-    st.info(body=texto_noticia_link)
+    with st.expander("Veja a notícia"):
+      st.info(body=texto_noticia_link)
+    
     st.write('##### Título Original')
     st.info(body=titulo_noticia_link)
 
