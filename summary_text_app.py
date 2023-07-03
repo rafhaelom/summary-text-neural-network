@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import T5Tokenizer
 from transformers import T5Model, T5ForConditionalGeneration
 
-# modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-cstnews)
+# modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-xlsum)
 tokenizer_pt_cstnews = T5Tokenizer.from_pretrained('unicamp-dl/ptt5-base-portuguese-vocab')
 model_pt_cstnews = T5ForConditionalGeneration.from_pretrained('phpaiola/ptt5-base-summ-xlsum')
 
@@ -27,12 +27,12 @@ if opcao == "Link":
 # Gerador da manchete após a escolha da origem
 if submit_button and opcao == "Texto" and texto_noticia != "":
   with st.spinner('Resumindo...'):
-    # modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-cstnews)
+    # modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-xlsum)
     inputs_pt_xlsum = tokenizer_pt_cstnews.encode(texto_noticia, max_length=512, truncation=True, return_tensors='pt')
     summary_ids_pt_xlsum = model_pt_cstnews.generate(inputs_pt_xlsum, max_length=256, min_length=32, num_beams=5, no_repeat_ngram_size=3, early_stopping=True)
     summary_pt_cstnews = tokenizer_pt_cstnews.decode(summary_ids_pt_xlsum[0])
 
-    st.write("#### Modelo 'phpaiola/ptt5-base-summ-cstnews' ✨")
+    st.write("#### Modelo 'phpaiola/ptt5-base-summ-xlsum' ✨")
     st.success(body=summary_pt_cstnews)
 if submit_button and opcao == "Link" and url_noticia != "":
   with st.spinner('Extraindo notícia...'):
@@ -55,7 +55,7 @@ if submit_button and opcao == "Link" and url_noticia != "":
     summary_ids_pt_xlsum = model_pt_cstnews.generate(inputs_pt_xlsum, max_length=256, min_length=32, num_beams=5, no_repeat_ngram_size=3, early_stopping=True)
     summary_pt_cstnews = tokenizer_pt_cstnews.decode(summary_ids_pt_xlsum[0])
 
-    st.write("#### Modelo 'phpaiola/ptt5-base-summ-cstnews' ✨")
+    st.write("#### Modelo 'phpaiola/ptt5-base-summ-xlsum' ✨")
     st.write('##### Título Gerado')
     st.success(body=summary_pt_cstnews)
 else:
