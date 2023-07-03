@@ -38,10 +38,14 @@ if submit_button and opcao == "Link" and url_noticia != "":
   with st.spinner('Extraindo notícia...'):
     g = Goose()
     article = g.extract(url=url_noticia)
+    titulo_noticia_link = article.title
     texto_noticia_link = article.cleaned_text
     g.close()
 
+    st.write('### Notícia 📄')
     st.info(body=texto_noticia_link)
+    st.write('##### Título Original')
+    st.info(body=titulo_noticia_link)
 
   with st.spinner('Resumindo...'):
     # modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-cstnews)
@@ -50,6 +54,7 @@ if submit_button and opcao == "Link" and url_noticia != "":
     summary_pt_cstnews = tokenizer_pt_cstnews.decode(summary_ids_pt_xlsum[0])
 
     st.write("#### Modelo 'phpaiola/ptt5-base-summ-cstnews' ✨")
+    st.write('##### Título Gerado')
     st.success(body=summary_pt_cstnews)
 else:
   st.warning(body="Insira uma notícia!!!", icon="⚠")
