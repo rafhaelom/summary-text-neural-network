@@ -10,7 +10,7 @@ from transformers import T5Model, T5ForConditionalGeneration
 from rouge_score import rouge_scorer
 
 # With `ttl`, objects in cache are removed after 24 hours.
-@st.cache(ttl=24*3600)
+@st.cache_resource(ttl=24*3600)
 def get_models():
   '''
   modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-xlsum)
