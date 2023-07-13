@@ -9,9 +9,45 @@ from transformers import T5Model, T5ForConditionalGeneration
 
 from rouge_score import rouge_scorer
 
-# modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-xlsum)
-tokenizer_pt_cstnews = T5Tokenizer.from_pretrained('unicamp-dl/ptt5-base-portuguese-vocab')
-model_pt_cstnews = T5ForConditionalGeneration.from_pretrained('phpaiola/ptt5-base-summ-xlsum')
+# With `ttl`, objects in cache are removed after 24 hours.
+@st.cache(ttl=24*3600)
+def get_models():
+  '''
+  modelo phpaiola/ptt5-base-summ-cstnews (https://huggingface.co/phpaiola/ptt5-base-summ-xlsum)
+  '''
+  tokenizer_pt_cstnews = T5Tokenizer.from_pretrained('unicamp-dl/ptt5-base-portuguese-vocab')
+  model_pt_cstnews = T5ForConditionalGeneration.from_pretrained('phpaiola/ptt5-base-summ-xlsum')
+  return tokenizer_pt_cstnews, model_pt_cstnews
+
+def limpa_frases_texto(texto):
+  '''
+  Função para remover frases/parágrafos contidos no texto.
+  '''
+  frase_1 = 'O formato de distribuição de notícias do Correio Braziliense pelo celular mudou. A partir de agora, as notícias chegarão diretamente pelo formato Comunidades, uma das inovações lançadas pelo WhatsApp. Não é preciso ser assinante para receber o serviço. Assim, o internauta pode ter, na palma da mão, matérias verificadas e com credibilidade. Para passar a receber as notícias do Correio, clique no link abaixo e entre na comunidade:'
+  frase_2 = 'Apenas os administradores do grupo poderão mandar mensagens e saber quem são os integrantes da comunidade. Dessa forma, evitamos qualquer tipo de interação indevida. Caso tenha alguma dificuldade ao acessar o link, basta adicionar o número (61) 99666-2581 na sua lista de contatos.'
+  frase_3 = 'Quer ficar por dentro sobre as principais notícias do Brasil e do mundo? Siga o Correio Braziliense nas redes sociais. Estamos no Twitter, no Facebook, no Instagram, no TikTok e no YouTube. Acompanhe!'
+  frase_4 = 'As informações são do jornal O Estado de S. Paulo.'
+  frase_5 = '• Blogs Redirect Novas temporadas de Outer banks, As five e Você se destacam no streaming em fevereiro'
+  frase_6 = 'Receba direto no celular as notícias mais recentes publicadas pelo Correio Braziliense. É de graça. Clique aqui e participe da comunidade do Correio, uma das inovações lançadas pelo WhatsApp.'
+  frase_7 = 'O Correio tem um espaço na edição impressa para publicar a opinião dos leitores. As mensagens devem ter, no máximo, 10 linhas e incluir nome, endereço e telefone para o e-mail sredat.df@dabr.com.br.'
+
+
+  texto = texto.split("¶")
+  texto = [frase.strip() for frase in texto if frase not in '']
+  texto = [frase.replace(frase_1, '') for frase in texto]
+  texto = [frase.replace(frase_2, '') for frase in texto]
+  texto = [frase.replace(frase_3, '') for frase in texto]
+  texto = [frase.replace(frase_4, '') for frase in texto]
+  texto = [frase.replace(frase_5, '') for frase in texto]
+  texto = [frase.replace(frase_6, '') for frase in texto]
+  texto = [frase.replace(frase_7, '') for frase in texto]
+  texto = [frase for frase in texto if frase not in '']
+  texto = ' '.join(texto)
+  texto = texto.split('•')
+  texto = [frase.strip() for frase in texto if frase not in '']
+  return ' '.join(texto)
+
+tokenizer_pt_cstnews, model_pt_cstnews = get_models()
 
 st.title("Gerador de manchete a partir do texto da notícia 📰")
 
@@ -44,6 +80,8 @@ if submit_button and opcao == "Link" and url_noticia != "":
     titulo_noticia_link = article.title
     texto_noticia_link = article.cleaned_text
     g.close()
+
+    texto_noticia_link = limpa_frases_texto(texto_noticia_link)
 
     st.write('### Notícia 📄')
     with st.expander("Veja a notícia"):
