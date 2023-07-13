@@ -3,3 +3,4 @@ transformers
 torch
 sentencepiece
 goose3==3.1.12
+rouge-score
